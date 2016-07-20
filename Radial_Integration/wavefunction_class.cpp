@@ -68,7 +68,7 @@ std::vector<double> UniqueEigenValues(MatrixXd M){
     return bounds;
 }
 
-std::vector<double> LaguerreRoots(int n, double a, double length_parameter = 1.0){
+std::vector<double> LaguerreRoots(int n, double a){
     std::vector<double> roots;
     MatrixXd T(n,n);
     T.setZero();
@@ -83,12 +83,10 @@ std::vector<double> LaguerreRoots(int n, double a, double length_parameter = 1.0
     for(int i=0;i<size_;i++){
         roots.push_back(eigen_values[i]);}
 
-    std::for_each(begin(roots), end(roots), [&length_parameter](double& r) { r *= length_parameter; });
-
     return roots;
 }
 
-std::vector<double> LaguerreSquaredRoots(int n, double a, double length_parameter = 1.0){
+std::vector<double> LaguerreSquaredRoots(int n, double a){
     std::vector<double> roots;
     MatrixXd T(n,n);
     T.setZero();
@@ -108,12 +106,10 @@ std::vector<double> LaguerreSquaredRoots(int n, double a, double length_paramete
         roots.push_back(eigen_values[i]);
     }
 
-    std::for_each(begin(roots), end(roots), [&length_parameter](double& r) { r *= length_parameter; });
-    std::for_each(begin(roots), end(roots), [](double& r) { sqrt(r); });
     return roots;
 }
 
-std::vector<double> JacobiRoots(int n, double a, double b, double length_parameter = 1.0){
+std::vector<double> JacobiRoots(int n, double a, double b){
     std::vector<double> roots;
     MatrixXd T(n,n);
     T.setZero();
@@ -121,9 +117,6 @@ std::vector<double> JacobiRoots(int n, double a, double b, double length_paramet
 
     BuildJacobi(T,n,a,b);
     eigen_values = UniqueEigenValues(T);
-
-    for(auto ev: eigen_values){
-        if(ev<0){eigen_values.erase(std::remove(eigen_values.begin(), eigen_values.end(), ev), eigen_values.end());}}
 
     int size_ = eigen_values.size();
     for(int i=0;i<size_;i++){
@@ -133,21 +126,25 @@ std::vector<double> JacobiRoots(int n, double a, double b, double length_paramet
 }
 
 std::vector<double> WaveFunction::FindRoots(){
-    std::vector<double> roots,roots1,roots2;
+    std::vector<double> roots;
 
     switch (basis_)
     {
         case Basis::HC:
-            roots = LaguerreSquaredRoots(n_,l_+0.5,b_);//Harmonic Oscillator Coordinate Radial Wavefunctions
+            roots = LaguerreSquaredRoots(n_,l_+0.5);//Harmonic Oscillator Coordinate Radial Wavefunctions
+            std::for_each(begin(roots), end(roots), [&](double& r) { r = sqrt(pow(this->b(),2)*r); });
             break;
         case Basis::HM:
-            roots = LaguerreSquaredRoots(n_,l_+0.5,1.0/b_);//Harmonic Oscillator Momentum Radial Wavefunctions
+            roots = LaguerreSquaredRoots(n_,l_+0.5);//Harmonic Oscillator Momentum Radial Wavefunctions
+            std::for_each(begin(roots), end(roots), [&](double& r) { r = sqrt(r/pow(this->b(),2)); });
             break;
         case Basis::LC:
-            roots = LaguerreRoots(n_,2*l_+2,b_*2);//CS Coordinate Radial Wavefunctions
+            roots = LaguerreRoots(n_,2*l_+2);//Laguerre Coordinate Radial Wavefunctions
+            std::for_each(begin(roots), end(roots), [&](double& r) { r *= this->b(); });
             break;
         case Basis::LM:
-            roots = JacobiRoots(n_,l_+1.5,l_+0.5,b_);// CS Momentum Radial Wavefunctions
+            roots = JacobiRoots(n_,l_+1.5,l_+0.5);//Laguerre Momentum Radial Wavefunctions
+            std::for_each(begin(roots), end(roots), [&](double& j) { j = (1.0/this->b())*sqrt((1+j)/(1-j)); });
             break;
     }
 

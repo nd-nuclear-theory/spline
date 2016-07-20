@@ -150,7 +150,35 @@ void XForm(){
 
 int main ()
 {
-  RadialMatrixElement(0);
+  //RadialMatrixElement(0);
   //XForm();
+
+ WaveFunction wf = WaveFunction(5,4,1.0,Basis::HC);
+ for(auto ele:wf.FindRoots()){std::cout<<ele<<std::endl;}
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
