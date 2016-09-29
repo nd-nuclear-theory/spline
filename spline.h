@@ -33,6 +33,10 @@ http://apps.nrbook.com/empanel/index.html#
 https://www.gnu.org/software/gsl/manual/gsl-ref.pdf
     - Chaper 28, Chapter 40
 
+9/28/16 (mac): Add preprocessor flag SPLINE_NO_FANCY_INTEGRATION to
+    disable unused Steffen and Akima integration, for use with older
+    GSL.
+
 */
 
 #ifndef CUBIC_SPLINE_INTERPOLATION
@@ -52,6 +56,7 @@ Core Function:
     -returns Integral value
 */
 
+#ifndef SPLINE_NO_FANCY_INTEGRATION
 double AkimaIntegrate(double *x,double *y, int n);
 /*
 x: Array of x axis data points
@@ -77,6 +82,8 @@ Core Function:
     -Calls gsl to evaluate integral from lower bound to upper bound
     -returns Integral value
 */
+#endif
+
 }
 #endif
 

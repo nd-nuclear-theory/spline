@@ -38,7 +38,8 @@ namespace spline{
         return integral_value;
     }
 
-        double AkimaIntegrate(double *x,double *y, int n){
+#ifndef SPLINE_NO_FANCY_INTEGRATION
+  double AkimaIntegrate(double *x,double *y, int n){
 
         gsl_interp_accel *acc = gsl_interp_accel_alloc (); //Returns pointer to accelerator object, tracks state of lookups
         const gsl_interp_type *t = gsl_interp_akima;//Cubic Spline with periodic boundary conditions, result: piecewise cubic on each interval
@@ -55,7 +56,7 @@ namespace spline{
         return integral_value;
     }
 
-        double SteffenIntegrate(double *x,double *y, int n){
+  double SteffenIntegrate(double *x,double *y, int n){
 
         gsl_interp_accel *acc = gsl_interp_accel_alloc (); //Returns pointer to accelerator object, tracks state of lookups
         const gsl_interp_type *t = gsl_interp_steffen;//Cubic Spline with periodic boundary conditions, result: piecewise cubic on each interval
@@ -71,4 +72,5 @@ namespace spline{
 
         return integral_value;
     }
+#endif
 }

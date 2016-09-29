@@ -8,8 +8,8 @@ Language C++
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <Eigen/Core>
-#include <Eigen/Eigenvalues>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Eigenvalues>
 #include <math.h>
 #include <vector>
 #include <algorithm>
