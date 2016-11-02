@@ -16,6 +16,8 @@ WaveFunction Class:
 #include <utility>
 #include <math.h>
 
+namespace spline {
+
 enum class Basis {HC=0,HM=1,LC=2,LM=3};
 
 class WaveFunction{
@@ -63,5 +65,5 @@ class WaveFunction{
         };
 };
 
+}  // namespace spline
 #endif
-

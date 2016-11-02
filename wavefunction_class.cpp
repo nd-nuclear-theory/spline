@@ -20,6 +20,7 @@ WaveFunction Class:
 #include "wavefunction_basis.h"
 #include "spline.h"
 
+namespace spline {
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatrixXd;
 
 void BuildLaguerre(MatrixXd &T, int n, double a){
@@ -241,15 +242,8 @@ double WaveFunction::MatrixElement(int n,WaveFunction wf, int order){
     double y[n];
     BuildArrays(x,y,n,*this,wf,order);
 
-    return spline::CubicIntegrate(x,y,n);
+    return CubicIntegrate(x,y,n);
 
 }
 
-
-
-
-
-
-
-
-
+}  // namespace spline

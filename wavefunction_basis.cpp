@@ -16,6 +16,7 @@ See header for details
 #include "wavefunction_basis.h"
 #include "wavefunction_class.h"
 
+namespace spline {
 namespace basis{
 
 double Factorial(int n){
@@ -127,3 +128,4 @@ double LaguerreMomentum(double k, WaveFunction wf){
 }
 
 }//close namespace
+}  // namespace spline

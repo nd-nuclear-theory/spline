@@ -11,6 +11,7 @@ CS_BASIS HEADER
 #define WAVEFUNCTION_BASIS_FUNCTIONS
 
 #include "wavefunction_class.h"
+namespace spline {
 namespace basis{
 
 double Factorial(int n);
@@ -79,5 +80,5 @@ l: quantum number l
 double LaguerreMomentum(double k, WaveFunction wf);
 
 }//Close Namespace
+}  // namespace spline
 #endif
-
