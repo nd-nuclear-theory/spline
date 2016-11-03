@@ -11,7 +11,7 @@ WaveFunction Class:
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Eigenvalues>

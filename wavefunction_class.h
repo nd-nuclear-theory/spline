@@ -14,7 +14,7 @@ WaveFunction Class:
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <math.h>
+#include <cmath>
 
 namespace spline {
 

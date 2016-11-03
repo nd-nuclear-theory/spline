@@ -8,10 +8,9 @@ Language C++
 SPLINE INTERPOLATION:
 *see header for details
 */
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
 #include <utility>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>

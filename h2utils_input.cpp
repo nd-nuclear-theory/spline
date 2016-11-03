@@ -10,7 +10,7 @@ Language C++
 #include <fstream>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Eigenvalues>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <algorithm>
 #include <utility>
@@ -18,6 +18,7 @@ Language C++
 #include "spline.h"
 #include "wavefunction_class.h"
 
+using namespace spline;
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatrixXd;
 
@@ -150,35 +151,10 @@ void XForm(){
 
 int main ()
 {
-  //RadialMatrixElement(0);
-  //XForm();
+  RadialMatrixElement(0);
+  XForm();
 
  WaveFunction wf = WaveFunction(5,4,1.0,Basis::HC);
  for(auto ele:wf.FindRoots()){std::cout<<ele<<std::endl;}
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

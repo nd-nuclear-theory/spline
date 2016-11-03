@@ -9,7 +9,7 @@ See header for details
 */
 #include <stdexcept>
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <gsl/gsl_sf_laguerre.h>
 
