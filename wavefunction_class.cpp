@@ -225,14 +225,13 @@ double RadialIntegrand(double z ,WaveFunction wf_1, WaveFunction wf_2 ,int order
     return v1*v2*jacob*pow(r,order);
 }
 
-void BuildArrays(double *x,double *y, int n,WaveFunction wf_1,WaveFunction wf_2,int order){
+void BuildArrays(double x[], double y[], int n,WaveFunction wf_1,WaveFunction wf_2,int order){
     double k = n;
-    double point = 0;
     double step = 1.0/k;
-    for(int i=0; i<=n; i++,point += step)
+    for(int i=0; i<n; ++i)
     {
-        x[i] = point;
-        y[i] = RadialIntegrand(point,wf_1,wf_2,order);
+        x[i] = i*step;
+        y[i] = RadialIntegrand(i*step,wf_1,wf_2,order);
     }
 }
 
