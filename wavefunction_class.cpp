@@ -231,8 +231,8 @@ void BuildArrays(double x[], double y[], int num_size, WaveFunction wf_1, WaveFu
     // handle last point separately
     for (int i=0; i < (num_size-1); ++i)
     {
-        x[i] = point;
-        y[i] = RadialIntegrand(point,wf_1,wf_2,order);
+        x[i] = i*step;
+        y[i] = RadialIntegrand(i*step, wf_1, wf_2, order);
     }
     x[num_size-1] = 1.0;
     y[num_size-1] = 0.0;
