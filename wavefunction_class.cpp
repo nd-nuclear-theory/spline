@@ -185,54 +185,48 @@ namespace spline {
     return integral_bounds;
   }
 
-  double RadialIntegrand(double z ,WaveFunction wf_1, WaveFunction wf_2 ,int order){
-    //Change of Variable
+  double RadialIntegrand(double z, WaveFunction wf_1, WaveFunction wf_2, int order){
+
+    // change of variable
     double r = z/(1.0-z);
     double jacob = pow(1.0-z,-2);
-    //********************************************
-    double v1,v2;
-    switch (wf_1.basis())
-      {
-      case Basis::HC:
-        v1 = basis::HarmonicCoordinate(r,wf_1);//Harmonic Oscillator Coordinate Radial Wavefunctions
-        break;
-      case Basis::HM:
-        v1 = basis::HarmonicMomentum(r,wf_1);//Harmonic Oscillator Momentum Radial Wavefunctions
-        break;
-      case Basis::LC:
-        v1 = basis::LaguerreCoordinate(r,wf_1);//Laguerre Coordinate Radial Wavefunctions
-        break;
-      case Basis::LM:
-        v1 = basis::LaguerreMomentum(r,wf_1);//Laguerre Momentum Radial Wavefunctions
-        break;
-      }
 
-    switch (wf_2.basis())
+    // evaluate integrand
+    double value;
+    if (order >= 0)
       {
-      case Basis::HC:
-        v2 = basis::HarmonicCoordinate(r,wf_2);//Harmonic Oscillator Coordinate Radial Wavefunctions
-        break;
-      case Basis::HM:
-        v2 = basis::HarmonicMomentum(r,wf_2);//Harmonic Oscillator Momentum Radial Wavefunctions
-        break;
-      case Basis::LC:
-        v2 = basis::LaguerreCoordinate(r,wf_2);//Laguerre Coordinate Radial Wavefunctions
-        break;
-      case Basis::LM:
-        v2 = basis::LaguerreMomentum(r,wf_2);//Laguerre Momentum Radial Wavefunctions
-        break;
+        double value1 = basis::WaveFunctionValue(r,wf_1);
+        double value2 = basis::WaveFunctionValue(r,wf_2);
+        value = value1*value2*jacob*pow(r,order);
       }
-    return v1*v2*jacob*pow(r,order);
+    else if (order == -1)
+      // order negative
+      //
+      // factor an r out of each wave function to avoid divide by zero
+      // if order -1 or -2 (operators r^-1 and r^-2)
+      {
+        double value1 = basis::WaveFunctionValue(r,wf_1,-0.5);
+        double value2 = basis::WaveFunctionValue(r,wf_2,-0.5);
+        value = value1*value2*jacob;
+      }
+    else if (order == -2)
+      {
+        double value1 = basis::WaveFunctionValue(r,wf_1,-1);
+        double value2 = basis::WaveFunctionValue(r,wf_2,-1);
+        value = value1*value2*jacob;
+      }
+    return value;
+
   }
 
-  void BuildArrays(double x[], double y[], int num_size, WaveFunction wf_1, WaveFunction wf_2, int order, double x0){
+  void BuildArrays(double x[], double y[], int num_size, WaveFunction wf_1, WaveFunction wf_2, int order){
     double num_steps = (num_size - 1);
-    double interval_width = 1. - x0;
+    double interval_width = 1.;
     double step = interval_width/num_steps;
 
     for (int i=0; i < (num_size-1); ++i)
       {
-        x[i] = x0+i*step;
+        x[i] = i*step;
         y[i] = RadialIntegrand(x[i], wf_1, wf_2, order);
       }
 
@@ -241,16 +235,16 @@ namespace spline {
     y[num_size-1] = 0.0;
   }
 
-  double WaveFunction::MatrixElement(int num_size, WaveFunction wf, int order, double x0){
+  double WaveFunction::MatrixElement(int num_size, WaveFunction wf, int order){
 
     // (mac): "n" is apparently the number of *points*, not *steps*, following gsl_interp
     // conventions; rename to num_size (as in BuildArrays)
 
     double x[num_size];
     double y[num_size];
-    BuildArrays(x,y,num_size,*this,wf,order,x0);
+    BuildArrays(x,y,num_size,*this,wf,order);
 
-    return CubicIntegrate(x,y,n);
+    return CubicIntegrate(x,y,num_size);
 
   }
 

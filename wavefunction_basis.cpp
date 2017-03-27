@@ -7,6 +7,7 @@
   Algorithm designed to generate C_S basis Wave Functions
   See header for details
 */
+
 #include <stdexcept>
 #include <limits>
 #include <cmath>
@@ -48,83 +49,59 @@ namespace spline {
       return J[n];
     }
 
-    double HarmonicCoordinate(double r, int n, int l, double b){
+    double HarmonicCoordinate(double r, int n, int l, double b, double power_shift){
 
       double laguerre = gsl_sf_laguerre_n(n,l+0.5,pow(r/b,2));
       double norm = sqrt(2*Factorial(n)/tgamma(l+n+1.5))*pow(b,-1.5);
-      double value = b*pow(r/b,l+1.0)*exp(-pow(r/b,2)/2.0);
+      double value = b*pow(1/b,-power_shift)*pow(r/b,l+1.0+power_shift)*exp(-pow(r/b,2)/2.0);
 
       return value*norm*laguerre;
     }
 
-    double HarmonicCoordinate(double r, WaveFunction wf){
-
-      if(wf.basis() != Basis::HC){throw std::invalid_argument("INVALID BASIS");}
-
-      double laguerre = gsl_sf_laguerre_n(wf.n(),wf.l()+0.5,pow(r/wf.b(),2));
-      double norm = sqrt(2*Factorial(wf.n())/tgamma(wf.l()+wf.n()+1.5))*pow(wf.b(),-1.5);
-      double value = wf.b()*pow(r/wf.b(),wf.l()+1.0)*exp(-pow(r/wf.b(),2)/2.0);
-
-      return value*norm*laguerre;
-    }
-
-    double HarmonicMomentum(double k, int n, int l, double b){
+    double HarmonicMomentum(double k, int n, int l, double b, double power_shift){
       double laguerre = gsl_sf_laguerre_n(n,l+0.5,pow(b*k,2));
       double norm = sqrt(2.0*Factorial(n)/tgamma(l+n+1.5))*pow(b,1.5);
-      double value = pow(-1.0,n)/b*pow(k*b,l+1.0)*exp(-pow(k*b,2)/2.0);
+      double value = pow(-1.0,n)/b*pow(b,-power_shift)*pow(k*b,l+1.0+power_shift)*exp(-pow(k*b,2)/2.0);
 
       return value*norm*laguerre;
     }
 
-    double HarmonicMomentum(double k, WaveFunction wf){
-
-      if(wf.basis() != Basis::HM){throw std::invalid_argument("INVALID BASIS");}
-
-      double laguerre = gsl_sf_laguerre_n(wf.n(),wf.l()+0.5,pow(wf.b()*k,2));
-      double norm = sqrt(2.0*Factorial(wf.n())/tgamma(wf.l()+wf.n()+1.5))*pow(wf.b(),1.5);
-      double value = pow(-1.0,wf.n())/wf.b()*pow(k*wf.b(),wf.l()+1.0)*exp(-pow(k*wf.b(),2)/2.0);
-
-      return value*norm*laguerre;
-    }
-
-    double LaguerreCoordinate(double r, int n, int l, double b){
+    double LaguerreCoordinate(double r, int n, int l, double b, double power_shift){
       double laguerre = gsl_sf_laguerre_n(n,2*l+2,2*r/b);
-      double value = b/2*pow(2*r/b,l+1)*exp(-r/b);
+      double value = b/2*pow(2/b,-power_shift)*pow(2*r/b,l+1+power_shift)*exp(-r/b);
       double norm = pow(2/b,1.5)*sqrt(Factorial(n)/Factorial(n+2*l+2));
 
       return value*norm*laguerre;
     }
 
-    double LaguerreCoordinate(double r, WaveFunction wf){
-
-      if(wf.basis() != Basis::LC){throw std::invalid_argument("INVALID BASIS");}
-
-      double laguerre = gsl_sf_laguerre_n(wf.n(),2*wf.l()+2,2*r/wf.b());
-      double value = wf.b()/2*pow(2*r/wf.b(),wf.l()+1)*exp(-r/wf.b());
-      double norm = pow(2/wf.b(),1.5)*sqrt(Factorial(wf.n())/Factorial(wf.n()+2*wf.l()+2));
-
-      return value*norm*laguerre;
-    }
-
-    double LaguerreMomentum(double k, int n, int l, double b){
+    double LaguerreMomentum(double k, int n, int l, double b, double power_shift){
       double j = (pow(b*k,2)-1)/(pow(b*k,2)+1);
       double jacobi = JacobiPolynomial(n,l+1.5,l+0.5,j);
-      double value = pow(b*k,l+1)/pow(pow(b*k,2)+1,l+2)/b;
+      double value = pow(b*k,-power_shift)*pow(b*k,l+1+power_shift)/pow(pow(b*k,2)+1,l+2)/b;
       double norm = 2*pow(b,1.5)*sqrt(Factorial(n)*Factorial(n+2*l+2))/tgamma(n+l+1.5);
 
       return value*norm*jacobi;
     }
 
-    double LaguerreMomentum(double k, WaveFunction wf){
-
-      if(wf.basis() != Basis::LM){throw std::invalid_argument("INVALID BASIS");}
-
-      double j = (pow(wf.b()*k,2)-1)/(pow(wf.b()*k,2)+1);
-      double jacobi = JacobiPolynomial(wf.n(),wf.l()+1.5,wf.l()+0.5,j);
-      double value = pow(wf.b()*k,wf.l()+1)/pow(pow(wf.b()*k,2)+1,wf.l()+2)/wf.b();
-      double norm = 2*pow(wf.b(),1.5)*sqrt(Factorial(wf.n())*Factorial(wf.n()+2*wf.l()+2))/tgamma(wf.n()+wf.l()+1.5);
-
-      return value*norm*jacobi;
+    double WaveFunctionValue(double x, WaveFunction wf, double power_shift)
+    {
+      double value;
+      switch (wf.basis())
+        {
+        case Basis::HC:
+          value = basis::HarmonicCoordinate(x,wf.n(),wf.l(),wf.b(),power_shift);//Harmonic Oscillator Coordinate Radial Wavefunctions
+          break;
+        case Basis::HM:
+          value = basis::HarmonicMomentum(x,wf.n(),wf.l(),wf.b(),power_shift);//Harmonic Oscillator Momentum Radial Wavefunctions
+          break;
+        case Basis::LC:
+          value = basis::LaguerreCoordinate(x,wf.n(),wf.l(),wf.b(),power_shift);//Laguerre Coordinate Radial Wavefunctions
+          break;
+        case Basis::LM:
+          value = basis::LaguerreMomentum(x,wf.n(),wf.l(),wf.b(),power_shift);//Laguerre Momentum Radial Wavefunctions
+          break;
+        }
+      return value;
     }
 
   }//close namespace

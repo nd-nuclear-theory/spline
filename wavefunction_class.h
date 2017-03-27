@@ -8,11 +8,13 @@
   Language C++
 
   + 3/26/17 (mac):
-    - Add optional x0 argument to MatrixElement, to shift
-    inner integration point for singular integrands (order <0).
     - Reformat code.
-
+    - Make use of updated dispatch function (WaveFunctionValue)
+      interface to wavefunction_basis.
+    - Use shift in wave function monomial power to evaluate matrix elements
+      of 1/r without divide-by-zero.
 */
+
 #ifndef RADIAL_WAVEFUNCTIONS_
 #define RADIAL_WAVEFUNCTIONS_
 
@@ -45,7 +47,7 @@ namespace spline {
     Basis basis(){return basis_;};
     std::vector<double> FindRoots();
     std::vector<std::pair<double,double>> MakeBounds(WaveFunction);
-    double MatrixElement(int num_size, WaveFunction wf, int order, double x0=0.);
+    double MatrixElement(int num_size, WaveFunction wf, int order);
 
     friend std::ostream& operator<<(std::ostream& out, WaveFunction& wf){
       out<<"Quantum Number n: "<<wf.n_;
