@@ -235,14 +235,28 @@ namespace spline {
     y[num_size-1] = 0.0;
   }
 
-  double WaveFunction::MatrixElement(int num_size, WaveFunction wf, int order){
+	double WaveFunction::MatrixElement(int num_size, WaveFunction wf, int order){
 
     // (mac): "n" is apparently the number of *points*, not *steps*, following gsl_interp
     // conventions; rename to num_size (as in BuildArrays)
 
     double x[num_size];
     double y[num_size];
-    BuildArrays(x,y,num_size,*this,wf,order);
+    BuildArrays(x,y,num_size,*this,wf2,order);
+
+    return CubicIntegrate(x,y,num_size);
+
+  }
+
+
+  double /*WaveFunction::*/MatrixElement(int num_size, WaveFunction wf1, WaveFunction wf2, int order){
+
+    // (mac): "n" is apparently the number of *points*, not *steps*, following gsl_interp
+    // conventions; rename to num_size (as in BuildArrays)
+
+    double x[num_size];
+    double y[num_size];
+    BuildArrays(x,y,num_size,wf1/**this*/,wf2,order);
 
     return CubicIntegrate(x,y,num_size);
 

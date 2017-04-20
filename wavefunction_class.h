@@ -72,5 +72,14 @@ namespace spline {
     };
   };
 
+	// V. Constantinou (04/06/17)
+
+	// Add in header file wavefunction_class.h so RadialIntegrand can be used outside wavefunction_class.cpp
+
+	double RadialIntegrand(double z, WaveFunction wf_1, WaveFunction wf_2, int order);
+
+	double MatrixElement(int num_size, WaveFunction wf1, WaveFunction wf2, int order);
+
+
 }  // namespace spline
 #endif
