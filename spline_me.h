@@ -10,6 +10,7 @@
   University of Notre Dame
 
   + 08/08/18 (pjf): Created.
+  + 08/14/18 (pjf): Fix phase on k matrix elements.
 ****************************************************************/
 
 #ifndef SPLINE_ME_H_
@@ -50,9 +51,11 @@ inline double RadialMatrixElement(
   // override operator type for overlaps
   if (operator_order == 0) operator_type = OperatorType::kR;
 
-  // select basis type
+  // select basis type and set phase
   Basis bra_basis_type, ket_basis_type;
+  int phase;
   if (operator_type == OperatorType::kR) {
+    phase = 1;
     if (bra_basis == BasisType::kOscillator) {
       bra_basis_type = Basis::HC;
     } else if (bra_basis == BasisType::kLaguerre) {
@@ -64,6 +67,7 @@ inline double RadialMatrixElement(
       ket_basis_type = Basis::LC;
     }
   } else if (operator_type == OperatorType::kK) {
+    phase = (((bra_l - ket_l - operator_order) / 2) % 2 == 0) ? +1 : -1;
     if (bra_basis == BasisType::kOscillator) {
       bra_basis_type = Basis::HM;
     } else if (bra_basis == BasisType::kLaguerre) {
@@ -79,7 +83,7 @@ inline double RadialMatrixElement(
   spline::WaveFunction bra_wavefunction(bra_n, bra_l, bra_b, bra_basis_type);
   spline::WaveFunction ket_wavefunction(ket_n, ket_l, ket_b, ket_basis_type);
 
-  double matrix_element =
+  double matrix_element = phase *
       bra_wavefunction.MatrixElement(num_steps, ket_wavefunction, operator_order);
 
   return matrix_element;
