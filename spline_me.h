@@ -11,6 +11,7 @@
 
   + 08/08/18 (pjf): Created.
   + 08/14/18 (pjf): Fix phase on k matrix elements.
+  + 09/03/19 (pjf): Fix phase on k matrix elements, again.
 ****************************************************************/
 
 #ifndef SPLINE_ME_H_
@@ -67,7 +68,10 @@ inline double RadialMatrixElement(
       ket_basis_type = Basis::LC;
     }
   } else if (operator_type == OperatorType::kK) {
-    phase = (((bra_l - ket_l - operator_order) / 2) % 2 == 0) ? +1 : -1;
+    // note (pjf): this phase comes from
+    //   $i^n [(-i)^{l_{bra}}]^\dagger (-i)^{l_{ket}}$
+    // it is only strictly correct if parity(bra_l-ket_l)=parity(operator_order)
+    phase = (((bra_l - ket_l + operator_order) / 2) % 2 == 0) ? +1 : -1;
     if (bra_basis == BasisType::kOscillator) {
       bra_basis_type = Basis::HM;
     } else if (bra_basis == BasisType::kLaguerre) {
