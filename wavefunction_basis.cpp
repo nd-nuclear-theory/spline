@@ -50,20 +50,31 @@ namespace spline {
     }
 
     double HarmonicCoordinate(double r, int n, int l, double b, double power_shift){
+      // convenience variables
+      constexpr double log2 = 6.93147180559945286e-01;
+      const double logb = log(b);
+      const double x2 = pow(r/b, 2);
 
-      double laguerre = gsl_sf_laguerre_n(n,l+0.5,pow(r/b,2));
-      double norm = sqrt(2*Factorial(n)/tgamma(l+n+1.5))*pow(b,-1.5);
-      double value = b*pow(1/b,-power_shift)*pow(r/b,l+1.0+power_shift)*exp(-pow(r/b,2)/2.0);
+      double laguerre = gsl_sf_laguerre_n(n,l+0.5,x2);
+      double lognorm = (log2 - 3*logb + lgamma(n+1) - lgamma(l+n+1.5))/2.;
+      double logvalue = (1+power_shift)*logb + (l+1+power_shift)*log(x2)/2. - x2/2.;
+      // int phase = 1;
 
-      return value*norm*laguerre;
+      return exp(lognorm+logvalue)*laguerre;
     }
 
     double HarmonicMomentum(double k, int n, int l, double b, double power_shift){
-      double laguerre = gsl_sf_laguerre_n(n,l+0.5,pow(b*k,2));
-      double norm = sqrt(2.0*Factorial(n)/tgamma(l+n+1.5))*pow(b,1.5);
-      double value = pow(-1.0,n)/b*pow(b,-power_shift)*pow(k*b,l+1.0+power_shift)*exp(-pow(k*b,2)/2.0);
+      // convenience variables
+      constexpr double log2 = 6.93147180559945286e-01;
+      const double logb = log(b);
+      const double y2 = pow(k*b, 2);
 
-      return value*norm*laguerre;
+      double laguerre = gsl_sf_laguerre_n(n,l+0.5,y2);
+      double lognorm = (log2 + 3*logb + lgamma(n+1) - lgamma(l+n+1.5))/2.;
+      double logvalue = -(1+power_shift)*logb + (l+1+power_shift)*log(y2)/2. - y2/2.;
+      int phase = (n%2 == 0) ? 1 : -1;
+
+      return phase*exp(logvalue+lognorm)*laguerre;
     }
 
     double LaguerreCoordinate(double r, int n, int l, double b, double power_shift){

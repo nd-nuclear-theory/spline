@@ -10,6 +10,9 @@
     - Eliminate cut-and-paste duplicate (r,n,l,b) and (r,wf) versions of each radial function.
     - Allow for shift in power of r multiplying wave function to facilitate avoiding
       divide-by-zero on operators with small negative powers of r.
+  + 10/17/20 (pjf):
+    - Prevent overflows by evaluating harmonic oscillator norms with sum of
+      log(gamma()) instead of product of gamma().
 */
 
 #ifndef WAVEFUNCTION_BASIS_FUNCTIONS_
