@@ -13,6 +13,7 @@
   + 10/17/20 (pjf):
     - Prevent overflows by evaluating harmonic oscillator norms with sum of
       log(gamma()) instead of product of gamma().
+    - Remove Factorial(), LaguerrePolynomial(), and JacobiPolynomial() from header.
 */
 
 #ifndef WAVEFUNCTION_BASIS_FUNCTIONS_
@@ -21,21 +22,6 @@
 #include "wavefunction_class.h"
 namespace spline {
   namespace basis{
-
-    double Factorial(int n);
-    //Calulates the factiorial of n = n!
-
-    double LaguerrePolynomial(int n, int k, double x);
-    //More information https://en.wikipedia.org/wiki/Laguerre_polynomials
-    //Returns the associated Laguerre polynomial of order n evaluated at x.
-    //n: polynomial order, must be an integer >= 0
-    //x: point at which to evaluate the function
-
-    double JacobiPolynomial(int n, double a, double b, double x);
-    //More information https://en.wikipedia.org/wiki/Jacobi_polynomials
-    //Returns the Hermite polynomial of order n evaluated at x.
-    //n: polynomial order, must be an integer >= 0
-    //x: point at which to evaluate the function
 
     double HarmonicCoordinate(double r, int n, int l, double b, double power_shift=0);
     //Evaluates Radial wavefunctions in coordinate space at point r for the Harmonic Oscillator basis
