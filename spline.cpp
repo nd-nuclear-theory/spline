@@ -21,7 +21,7 @@
   Enter function required for evaluation here:
 */
 namespace spline{
-  double CubicIntegrate(double *x,double *y, int n){
+  double CubicIntegrate(const double x[], const double y[], int n){
 
     gsl_interp_accel *acc = gsl_interp_accel_alloc (); //Returns pointer to accelerator object, tracks state of lookups
     const gsl_interp_type *t = gsl_interp_cspline;//Cubic Spline with periodic boundary conditions, result: piecewise cubic on each interval

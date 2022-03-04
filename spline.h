@@ -36,14 +36,19 @@
   + 9/28/16 (mac): Add preprocessor flag SPLINE_NO_FANCY_INTEGRATION to
   disable unused Steffen and Akima integration, for use with older
   GSL.
-  + 3/26/17 (mac): Reformat code.    
+  + 3/26/17 (mac): Reformat code.
+  + 03/03/22 (pjf):
+    + Fix const-correctness of CubicIntegrate.
+    + Add template overload of CubicIntegrate for STL-like containers (with size() and data)
 */
 
 #ifndef CUBIC_SPLINE_INTERPOLATION_
 #define CUBIC_SPLINE_INTERPOLATION_
+
+#include <stdexcept>
 namespace spline{
 
-  double CubicIntegrate(double *x,double *y, int n);
+  double CubicIntegrate(const double x[], const double y[], int n);
   /*
     x: Array of x axis data points
     y: Array of y axis data points
@@ -55,6 +60,18 @@ namespace spline{
     -Calls gsl to evaluate integral from lower bound to upper bound
     -returns Integral value
   */
+
+  template<
+      typename T,
+      decltype(std::declval<T>().size())* = nullptr,
+      decltype(std::declval<T>().data())* = nullptr
+    >
+  inline double CubicIntegrate(const T& x, const T& y)
+  {
+    if (x.size() != y.size())
+      throw std::invalid_argument("unequal length containers");
+    return CubicIntegrate(x.data(), y.data(), x.size());
+  }
 
 #ifndef SPLINE_NO_FANCY_INTEGRATION
   double AkimaIntegrate(double *x,double *y, int n);
