@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Eigenvalues>
+#include <Eigen/Core>
+#include <Eigen/Eigenvalues>
 
 #include "wavefunction_class.h"
 #include "wavefunction_basis.h"
